@@ -18,6 +18,7 @@ return new class extends Migration
 
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('location_id')->constrained('locations')->onDelete('cascade');
+            $table->foreignId('domain_id')->constrained('domains')->onDelete('cascade');
 
             $table->string('code')->unique();
             $table->string('name');

@@ -23,10 +23,9 @@ Route::group(['prefix' => 'api/v1'], function () {
         return response()->json(['token' => $token]);
     });
 
-
     Route::post('/login', function (Request $request) {
         $user = User::where('email', $request->email)->first();
-        
+
         if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json(['message' => 'Invalid credentials'], 401);
         }
