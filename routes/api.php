@@ -4,8 +4,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\{
     AddressController,
     ActivityController,
-    EnrollmentController,
     DomainController,
+    EnrollmentController,
+    FrequencyController,
     UserController,
     ScheduleController,
     LocationController,
@@ -96,6 +97,14 @@ Route::prefix('api/v1')->middleware('missing.parameter')->group(function () {
             Route::get('/{scheduleId}', [ScheduleController::class, 'show'])->name('schedule.show');
             Route::put('/{scheduleId}', [ScheduleController::class, 'update'])->name('schedule.update');
             Route::delete('/{scheduleId}', [ScheduleController::class, 'destroy'])->name('schedule.destroy');
+        });
+
+        Route::prefix('frequencies')->group(function () {
+            Route::get('/', [FrequencyController::class, 'index'])->name('frequency.index');
+            Route::post('/', [FrequencyController::class, 'store'])->name('frequency.store');
+            Route::get('/{frequencyId}', [FrequencyController::class, 'show'])->name('frequency.show');
+            Route::put('/{frequencyId}', [FrequencyController::class, 'update'])->name('frequency.update');
+            Route::delete('/{frequencyId}', [FrequencyController::class, 'destroy'])->name('frequency.destroy');
         });
     });
 });

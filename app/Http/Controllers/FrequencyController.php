@@ -41,10 +41,6 @@ class FrequencyController extends Controller
     public function store(RequestInterface $request): JsonResponse
     {
         try {
-            $data = $request->merge([
-                'teacher_id' => auth()->user()->teacher->id,
-            ])->all();
-
             $stored = $this->service->store($data);
         } catch (ValidationException $e) {
             return $this->badRequestError(['errors' => $e->errors()]);
