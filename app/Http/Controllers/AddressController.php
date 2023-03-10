@@ -2,8 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\AddressResource;
+use App\Http\Requests\Address\{
+    StoreRequest,
+    UpdateRequest,
+};
+use App\Http\Resources\{
+    AddressResource,
+    DefaultCollection,
+};;
 use App\Services\AddressService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\ResourceCollection;
+use Illuminate\Validation\ValidationException;
 
 class AddressController extends Controller
 {
@@ -13,28 +24,77 @@ class AddressController extends Controller
         $this->jsonResource = AddressResource::class;
     }
 
-    public function index()
+    public function index(Request $request): ResourceCollection
     {
-        return $this->service->index();
+        $resources = $this->service->index($request->all());
+
+        return new DefaultCollection($this->jsonResource, $resources);
     }
 
-    public function show($id)
+    public function show(int $id): AddressResource
     {
-        return $this->service->show($id);
+        $resource = $this->service->show($id);
+        if (!$resource) {
+            return $this->notFoundError(['message' => __('messages.api.error.not.found')]);
+        }
+
+        return new $this->jsonResource($resource);
     }
 
-    public function store(Request $request)
+    public function store(StoreRequest $request): JsonResponse
     {
-        return $this->service->store($request);
+        try {
+            $data = $request->merge([
+                'teacher_id' => auth()->user()->teacher->id,
+            ])->all();
+
+            $stored = $this->service->store($data);
+        } catch (ValidationException $e) {
+            return $this->badRequestError(['errors' => $e->errors()]);
+        } catch (\Exception $e) {
+            return $this->genericError(['message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
+        }
+
+        return $this->created([
+            'data' => $this->jsonResource::make($stored),
+        ]);
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdateRequest $request, int $id): JsonResponse
     {
-        return $this->service->update($request, $id);
+        $resource = $this->service->show($id);
+
+        if (!$resource) {
+            return $this->_notFoundError(['message' => __('messages.api.error.not.found')]);
+        }
+
+        try {
+            $updated = $this->service->update($resource, $request->all());
+        } catch (ValidationException $e) {
+            return $this->badRequestError(['errors' => $e->errors()]);
+        } catch (\Exception $e) {
+            return $this->genericError(['message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
+        }
+
+        return $this->success([
+            'data' => $this->jsonResource::make($updated),
+        ]);
     }
 
-    public function destroy($id)
+    public function destroy(int $id): JsonResponse
     {
-        return $this->service->destroy($id);
+        $resource = $this->service->show($id);
+
+        if (!$resource) {
+            return $this->notFoundError(['message' => __('messages.api.error.not.found')]);
+        }
+
+        try {
+            $this->service->destroy($resource);
+        } catch (\Exception $e) {
+            return $this->genericError(['message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
+        }
+
+        return $this->noContent();
     }
 }
