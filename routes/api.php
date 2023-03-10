@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\{
+    ActivityController,
     DomainController,
     UserController,
 };
@@ -9,8 +10,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 
-Route::group(['prefix' => 'api/v1'], function () {
-    Route::group(['prefix' => 'users'], function () {
+Route::prefix('api/v1')->group(function () {
+    Route::prefix('users')->group(function () {
         Route::put('/{id}', [UserController::class, 'update']);
     });
 
@@ -45,12 +46,20 @@ Route::group(['prefix' => 'api/v1'], function () {
             return response()->json(['message' => 'Logged out']);
         });
 
-        Route::group(['prefix' => 'domains'], function () {
-            Route::get('/', [DomainController::class, 'index']);
-            Route::post('/', [DomainController::class, 'store']);
-            Route::get('/{id}', [DomainController::class, 'show']);
-            Route::put('/{id}', [DomainController::class, 'update']);
-            Route::delete('/{id}', [DomainController::class, 'destroy']);
+        Route::prefix('activities')->group(function () {
+            Route::get('/', [ActivityController::class, 'index'])->name('activity.index');
+            Route::post('/', [ActivityController::class, 'store'])->name('activity.store');
+            Route::get('/{activityId}', [ActivityController::class, 'show'])->name('activity.show');
+            Route::put('/{activityId}', [ActivityController::class, 'update'])->name('activity.update');
+            Route::delete('/{activityId}', [ActivityController::class, 'destroy'])->name('activity.destroy');
+        });
+
+        Route::prefix('domains')->group(function () {
+            Route::get('/', [DomainController::class, 'index'])->name('domain.index');
+            Route::post('/', [DomainController::class, 'store'])->name('domain.store');
+            Route::get('/{domainId}', [DomainController::class, 'show'])->name('domain.show');
+            Route::put('/{domainId}', [DomainController::class, 'update'])->name('domain.update');
+            Route::delete('/{domainId}', [DomainController::class, 'destroy'])->name('domain.destroy');
         });
     });
 });

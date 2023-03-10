@@ -13,6 +13,7 @@ class Activity extends Model
     protected $table = 'activities';
 
     protected $fillable = [
+        'domain_id',
         'teacher_id',
         'location_id',
         'code',
