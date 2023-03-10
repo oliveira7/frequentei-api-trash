@@ -16,8 +16,9 @@ return new class extends Migration
         Schema::create('locations', function (Blueprint $table) {
             $table->id();
 
+            $table->foreignId('domain_id')->constrained('domains')->onDelete('cascade');
+
             $table->string('name');
-            $table->string('place');
             $table->string('description')->nullable();
 
             $table->timestamps();

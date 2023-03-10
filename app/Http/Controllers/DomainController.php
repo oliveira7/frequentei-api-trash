@@ -41,11 +41,7 @@ class DomainController extends Controller
     public function store(RequestInterface $request): JsonResponse
     {
         try {
-            $data = $request->merge([
-                'teacher_id' => auth()->user()->teacher->id,
-            ])->all();
-
-            $stored = $this->service->store($data);
+            $stored = $this->service->store($request->validated());
         } catch (ValidationException $e) {
             return $this->badRequestError(['errors' => $e->errors()]);
         } catch (\Exception $e) {

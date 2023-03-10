@@ -2,18 +2,10 @@
 
 namespace App\Http\Requests\Address;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\BaseRequests\Request;
 
-class UpdateRequest extends FormRequest
+class UpdateRequest extends Request
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
-    public function authorize(): bool
-    {
-        return true;
-    }
-
     public function rules(): array
     {
         return [

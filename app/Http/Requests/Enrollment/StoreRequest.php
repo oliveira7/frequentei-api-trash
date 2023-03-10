@@ -2,24 +2,16 @@
 
 namespace App\Http\Requests\Enrollment;
 
-use App\Http\Requests\BaseRequest;
+use App\Http\Requests\BaseRequests\Request;
 
-class StoreRequest extends BaseRequest
+class StoreRequest extends Request
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
-    public function authorize(): bool
-    {
-        return true;
-    }
-
     public function rules(): array
     {
         return [
             'activity_id' => 'required|integer|exists:activities,id',
-            'status' => 'required|boolean|in:true,false',
-            'registration_at' => 'required|date|date_format:Y-m-d H:i:s',
+            'status' => 'required|boolean',
+            'registered_at' => 'required|date|date_format:Y-m-d H:i:s',
         ];
     }
 }

@@ -2,10 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Enrollment\{
-    StoreRequest,
-    UpdateRequest,
-};
+use App\Http\Requests\BaseRequests\RequestInterface;
 use App\Http\Resources\{
     EnrollmentResource,
     DefaultCollection,

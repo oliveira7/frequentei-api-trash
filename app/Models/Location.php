@@ -13,13 +13,18 @@ class Location extends Model
     protected $table = 'locations';
 
     protected $fillable = [
+        'domain_id',
         'name',
-        'place',
         'description',
     ];
 
     public function activities()
     {
         return $this->hasMany(Activity::class);
+    }
+
+    public function domain()
+    {
+        return $this->belongsTo(Domain::class);
     }
 }

@@ -7,12 +7,13 @@ use App\Http\Controllers\{
     EnrollmentController,
     DomainController,
     UserController,
+    LocationController,
 };
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 
-Route::prefix('api/v1')->group(function () {
+Route::prefix('api/v1')->middleware('missing.parameter')->group(function () {
     Route::prefix('users')->group(function () {
         Route::put('/{id}', [UserController::class, 'update']);
     });
@@ -42,7 +43,7 @@ Route::prefix('api/v1')->group(function () {
     });
 
     Route::middleware('auth:sanctum')->group(function () {
-        Route::post('/logout', function (Request $request) {
+        Route::post('/logout', function () {
             auth()->user()->tokens()->delete();
 
             return response()->json(['message' => 'Logged out']);
@@ -78,6 +79,14 @@ Route::prefix('api/v1')->group(function () {
             Route::get('/{enrollmentId}', [EnrollmentController::class, 'show'])->name('enrollment.show');
             Route::put('/{enrollmentId}', [EnrollmentController::class, 'update'])->name('enrollment.update');
             Route::delete('/{enrollmentId}', [EnrollmentController::class, 'destroy'])->name('enrollment.destroy');
+        });
+
+        Route::prefix('locations')->group(function () {
+            Route::get('/', [LocationController::class, 'index'])->name('location.index');
+            Route::post('/', [LocationController::class, 'store'])->name('location.store');
+            Route::get('/{locationId}', [LocationController::class, 'show'])->name('location.show');
+            Route::put('/{locationId}', [LocationController::class, 'update'])->name('location.update');
+            Route::delete('/{locationId}', [LocationController::class, 'destroy'])->name('location.destroy');
         });
     });
 });

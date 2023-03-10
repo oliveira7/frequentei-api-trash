@@ -16,10 +16,12 @@ return new class extends Migration
         Schema::create('enrollments', function (Blueprint $table) {
             $table->id();
 
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('activity_id')->constrained('activities')->onDelete('cascade');
 
             $table->boolean('status');
-            $table->timestamp('registered_at')->default(now());
+            $table->date('start_period')->default(now());
+            $table->date('end_period')->default(now());
 
             $table->timestamps();
             $table->softDeletes();

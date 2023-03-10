@@ -13,13 +13,20 @@ class Enrollment extends Model
     protected $table = 'enrollments';
 
     protected $fillable = [
+        'user_id',
         'activity_id',
         'status',
-        'registration_at',
+        'start_period',
+        'end_period'
     ];
 
     public function activity()
     {
         return $this->belongsTo(Activity::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

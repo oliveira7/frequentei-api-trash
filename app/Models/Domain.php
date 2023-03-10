@@ -26,4 +26,9 @@ class Domain extends Model
     {
         return $this->belongsTo(Teacher::class);
     }
+
+    public function locations()
+    {
+        return $this->hasMany(Location::class);
+    }
 }
