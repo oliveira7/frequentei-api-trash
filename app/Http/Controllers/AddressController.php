@@ -45,7 +45,7 @@ class AddressController extends Controller
     {
         try {
             $data = $request->merge([
-                'teacher_id' => auth()->user()->teacher->id,
+                'user_id' => auth()->user()->id,
             ])->all();
 
             $stored = $this->service->store($data);

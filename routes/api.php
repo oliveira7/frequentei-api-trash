@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\{
+    AddressController,
     ActivityController,
     DomainController,
     UserController,
@@ -60,6 +61,14 @@ Route::prefix('api/v1')->group(function () {
             Route::get('/{domainId}', [DomainController::class, 'show'])->name('domain.show');
             Route::put('/{domainId}', [DomainController::class, 'update'])->name('domain.update');
             Route::delete('/{domainId}', [DomainController::class, 'destroy'])->name('domain.destroy');
+        });
+
+        Route::prefix('adresses')->group(function () {
+            Route::get('/', [AddressController::class, 'index'])->name('address.index');
+            Route::post('/', [AddressController::class, 'store'])->name('address.store');
+            Route::get('/{addressId}', [AddressController::class, 'show'])->name('address.show');
+            Route::put('/{addressId}', [AddressController::class, 'update'])->name('address.update');
+            Route::delete('/{addressId}', [AddressController::class, 'destroy'])->name('address.destroy');
         });
     });
 });
