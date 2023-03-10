@@ -45,16 +45,14 @@ class ScheduleController extends Controller
                 'teacher_id' => auth()->user()->teacher->id,
             ])->all();
 
-            $stored = $this->service->store($data);
+            $this->service->store($data);
         } catch (ValidationException $e) {
             return $this->badRequestError(['errors' => $e->errors()]);
         } catch (\Exception $e) {
             return $this->genericError(['message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
         }
 
-        return $this->created([
-            'data' => $this->jsonResource::make($stored),
-        ]);
+        return $this->noContent();
     }
 
     public function update(RequestInterface $request, int $id): JsonResponse

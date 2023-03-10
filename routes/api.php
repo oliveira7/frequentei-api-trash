@@ -7,6 +7,7 @@ use App\Http\Controllers\{
     EnrollmentController,
     DomainController,
     UserController,
+    ScheduleController,
     LocationController,
 };
 use Illuminate\Http\Request;
@@ -87,6 +88,14 @@ Route::prefix('api/v1')->middleware('missing.parameter')->group(function () {
             Route::get('/{locationId}', [LocationController::class, 'show'])->name('location.show');
             Route::put('/{locationId}', [LocationController::class, 'update'])->name('location.update');
             Route::delete('/{locationId}', [LocationController::class, 'destroy'])->name('location.destroy');
+        });
+
+        Route::prefix('schedules')->group(function () {
+            Route::get('/', [ScheduleController::class, 'index'])->name('schedule.index');
+            Route::post('/', [ScheduleController::class, 'store'])->name('schedule.store');
+            Route::get('/{scheduleId}', [ScheduleController::class, 'show'])->name('schedule.show');
+            Route::put('/{scheduleId}', [ScheduleController::class, 'update'])->name('schedule.update');
+            Route::delete('/{scheduleId}', [ScheduleController::class, 'destroy'])->name('schedule.destroy');
         });
     });
 });
