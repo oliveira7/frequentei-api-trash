@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\{
     AddressController,
     ActivityController,
+    EnrollmentController,
     DomainController,
     UserController,
 };
@@ -69,6 +70,14 @@ Route::prefix('api/v1')->group(function () {
             Route::get('/{addressId}', [AddressController::class, 'show'])->name('address.show');
             Route::put('/{addressId}', [AddressController::class, 'update'])->name('address.update');
             Route::delete('/{addressId}', [AddressController::class, 'destroy'])->name('address.destroy');
+        });
+
+        Route::prefix('enrollments')->group(function () {
+            Route::get('/', [EnrollmentController::class, 'index'])->name('enrollment.index');
+            Route::post('/', [EnrollmentController::class, 'store'])->name('enrollment.store');
+            Route::get('/{enrollmentId}', [EnrollmentController::class, 'show'])->name('enrollment.show');
+            Route::put('/{enrollmentId}', [EnrollmentController::class, 'update'])->name('enrollment.update');
+            Route::delete('/{enrollmentId}', [EnrollmentController::class, 'destroy'])->name('enrollment.destroy');
         });
     });
 });

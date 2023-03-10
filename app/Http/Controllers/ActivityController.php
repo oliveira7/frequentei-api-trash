@@ -2,10 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Activity\{
-    StoreRequest,
-    UpdateRequest,
-};
+use App\Http\Requests\BaseRequests\RequestInterface;
 use App\Http\Resources\{
     ActivityResource,
     DefaultCollection,
@@ -41,13 +38,13 @@ class ActivityController extends Controller
         return new $this->jsonResource($resource);
     }
 
-    public function store(StoreRequest $request): JsonResponse
+    public function store(RequestInterface $request): JsonResponse
     {
         try {
             $data = $request->merge([
                 'teacher_id' => auth()->user()->teacher->id,
             ])->all();
- 
+
             $stored = $this->service->store($data);
         } catch (ValidationException $e) {
             return $this->badRequestError(['errors' => $e->errors()]);
@@ -60,7 +57,7 @@ class ActivityController extends Controller
         ]);
     }
 
-    public function update(UpdateRequest $request, int $id): JsonResponse
+    public function update(RequestInterface $request, int $id): JsonResponse
     {
         $resource = $this->service->show($id);
 

@@ -2,10 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\User\{
-    StoreRequest,
-    UpdateRequest,
-};
+use App\Http\Requests\BaseRequests\RequestInterface;
 use App\Http\Resources\{
     UserResource,
     DefaultCollection,
@@ -41,7 +38,7 @@ class UserController extends Controller
         return new $this->jsonResource($resource);
     }
 
-    public function store(StoreRequest $request): JsonResponse
+    public function store(RequestInterface $request): JsonResponse
     {
         try {
             $data = $request->merge([
@@ -60,7 +57,7 @@ class UserController extends Controller
         ]);
     }
 
-    public function update(UpdateRequest $request, int $id): JsonResponse
+    public function update(RequestInterface $request, int $id): JsonResponse
     {
         $resource = $this->service->show($id);
 

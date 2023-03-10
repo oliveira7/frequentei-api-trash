@@ -41,14 +41,10 @@ class EnrollmentController extends Controller
         return new $this->jsonResource($resource);
     }
 
-    public function store(StoreRequest $request): JsonResponse
+    public function store(RequestInterface $request): JsonResponse
     {
         try {
-            $data = $request->merge([
-                'teacher_id' => auth()->user()->teacher->id,
-            ])->all();
-
-            $stored = $this->service->store($data);
+            $stored = $this->service->store($request->all());
         } catch (ValidationException $e) {
             return $this->badRequestError(['errors' => $e->errors()]);
         } catch (\Exception $e) {
@@ -60,7 +56,7 @@ class EnrollmentController extends Controller
         ]);
     }
 
-    public function update(UpdateRequest $request, int $id): JsonResponse
+    public function update(RequestInterface $request, int $id): JsonResponse
     {
         $resource = $this->service->show($id);
 
