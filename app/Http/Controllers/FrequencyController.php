@@ -2,14 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Frequency;
-use Illuminate\Http\Request;
-
 class FrequencyController extends BaseController
 {
-    public function __construct(CityService $service)
+    public function __construct(FrequencyService $service)
     {
         $this->service = $service;
-        $this->jsonResource = CityResource::class;
+        $this->jsonResource = FrequencyResource::class;
     }
 }

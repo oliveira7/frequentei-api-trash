@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Enrollment;
 use Illuminate\Http\Request;
 
-class EnrollmentController extends BaseController
+class EnrollmentController extends Controller
 {
     public function __construct(CityService $service)
     {

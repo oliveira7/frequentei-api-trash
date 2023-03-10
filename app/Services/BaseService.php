@@ -2,12 +2,15 @@
 
 namespace App\Services;
 
+use App\Traits\ListMethod;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
 class BaseService
 {
+    use ListMethod;
+
     protected $repository;
 
     public function index(array $requestData = [], ?Builder $query = null)

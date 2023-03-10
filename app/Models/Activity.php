@@ -33,4 +33,14 @@ class Activity extends Model
     {
         return $this->belongsTo(Location::class);
     }
+
+    public function teacher()
+    {
+        return $this->belongsTo(Teacher::class);
+    }
+
+    public function domain()
+    {
+        return $this->belongsTo(Domain::class);
+    }
 }

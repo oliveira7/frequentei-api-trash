@@ -2,17 +2,28 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\DefaultCollection;
+use App\Http\Requests\Domain\{
+    StoreRequest,
+    UpdateRequest,
+};
+use App\Http\Resources\{
+    DomainResource,
+    DefaultCollection,
+};;
+use App\Services\DomainService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
-use Illuminate\Http\Response;
 use Illuminate\Validation\ValidationException;
 
-class BaseController extends Controller
+class DomainController extends Controller
 {
-    protected $service;
-    protected $jsonResource;
+    public function __construct(DomainService $service)
+    {
+        $this->service = $service;
+        $this->jsonResource = DomainResource::class;
+    }
 
     public function index(Request $request): ResourceCollection
     {
@@ -21,10 +32,9 @@ class BaseController extends Controller
         return new DefaultCollection($this->jsonResource, $resources);
     }
 
-    public function show(int $id): JsonResponse
+    public function show(int $id): DomainResource
     {
         $resource = $this->service->show($id);
-
         if (!$resource) {
             return $this->notFoundError(['message' => __('messages.api.error.not.found')]);
         }
@@ -32,10 +42,14 @@ class BaseController extends Controller
         return new $this->jsonResource($resource);
     }
 
-    public function store(Request $request): JsonResponse
+    public function store(StoreRequest $request): JsonResponse
     {
         try {
-            $stored = $this->service->store($request->all());
+            $data = $request->merge([
+                'teacher_id' => auth()->user()->teacher->id,
+            ])->all();
+
+            $stored = $this->service->store($data);
         } catch (ValidationException $e) {
             return $this->badRequestError(['errors' => $e->errors()]);
         } catch (\Exception $e) {
@@ -47,7 +61,7 @@ class BaseController extends Controller
         ]);
     }
 
-    public function update(Request $request, int $id): JsonResponse
+    public function update(UpdateRequest $request, int $id): JsonResponse
     {
         $resource = $this->service->show($id);
 
@@ -83,70 +97,5 @@ class BaseController extends Controller
         }
 
         return $this->noContent();
-    }
-
-    protected function success(array $data): JsonResponse
-    {
-        $data = array_merge([
-            'success' => true,
-        ], $data);
-
-        return response()->json($data, Response::HTTP_OK);
-    }
-
-    protected function created(array $data): JsonResponse
-    {
-        $data = array_merge([
-            'success' => true,
-        ], $data);
-
-        return response()->json($data, Response::HTTP_CREATED);
-    }
-
-    protected function noContent(): JsonResponse
-    {
-        return response()->json([], Response::HTTP_NO_CONTENT);
-    }
-
-    protected function badRequestError(array $data): JsonResponse
-    {
-        $data = array_merge([
-            'success' => false,
-        ], $data);
-
-        return response()->json($data, Response::HTTP_BAD_REQUEST);
-    }
-
-    protected function notFoundError(array $data): JsonResponse
-    {
-        $data = array_merge([
-            'success' => false,
-        ], $data);
-
-        return response()->json($data, Response::HTTP_NOT_FOUND);
-    }
-
-    protected function genericError(array $data): JsonResponse
-    {
-        if (!config('app.debug')) {
-            $data = ['message' => __('messages.')];
-        }
-
-        $data = array_merge([
-            'success' => false,
-        ], $data);
-
-        return response()->json($data, Response::HTTP_INTERNAL_SERVER_ERROR);
-    }
-
-    public function validationRequest(Request $request, array $rules, array $messages = [], array $customAttributes = []): array
-    {
-        $validator = \Validator::make($request->all(), $rules, $messages, $customAttributes);
-
-        if ($validator->fails()) {
-            throw new ValidationException($validator);
-        }
-
-        return $validator->validated();
     }
 }
